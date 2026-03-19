@@ -10,35 +10,35 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-–gold: #c9a84c;
-–gold-light: #e8cc7a;
-–gold-dim: #7a6230;
-–copper: #b5651d;
-–dark: #0a0a0f;
-–mid: #14141e;
-–surface: #1c1c2a;
-–text: #e8dcc8;
-–text-dim: #8a7a60;
-–glow: rgba(201,168,76,0.35);
-–glow-hit: rgba(201,168,76,0.7);
+--gold: #c9a84c;
+--gold-light: #e8cc7a;
+--gold-dim: #7a6230;
+--copper: #b5651d;
+--dark: #0a0a0f;
+--mid: #14141e;
+--surface: #1c1c2a;
+--text: #e8dcc8;
+--text-dim: #8a7a60;
+--glow: rgba(201,168,76,0.35);
+--glow-hit: rgba(201,168,76,0.7);
 }
 
 body {
-background: var(–dark);
+background: var(--dark);
 min-height: 100vh;
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-font-family: ‘Crimson Pro’, serif;
-color: var(–text);
+font-family: 'Crimson Pro', serif;
+color: var(--text);
 overflow: hidden;
 user-select: none;
 }
 
 /* Starfield bg */
 body::before {
-content: ‘’;
+content: '';
 position: fixed;
 inset: 0;
 background:
@@ -59,13 +59,13 @@ z-index: 0;
 position: absolute;
 border-radius: 50%;
 background: white;
-animation: twinkle var(–d, 3s) ease-in-out infinite;
-animation-delay: var(–delay, 0s);
+animation: twinkle var(--d, 3s) ease-in-out infinite;
+animation-delay: var(--delay, 0s);
 }
 
 @keyframes twinkle {
-0%, 100% { opacity: var(–min-o, 0.1); transform: scale(1); }
-50% { opacity: var(–max-o, 0.6); transform: scale(1.2); }
+0%, 100% { opacity: var(--min-o, 0.1); transform: scale(1); }
+50% { opacity: var(--max-o, 0.6); transform: scale(1.2); }
 }
 
 header {
@@ -76,18 +76,18 @@ margin-bottom: 2rem;
 }
 
 header h1 {
-font-family: ‘Cinzel’, serif;
+font-family: 'Cinzel', serif;
 font-weight: 400;
 font-size: clamp(1.4rem, 3vw, 2rem);
 letter-spacing: 0.4em;
-color: var(–gold);
-text-shadow: 0 0 30px var(–glow);
+color: var(--gold);
+text-shadow: 0 0 30px var(--glow);
 }
 
 header p {
 font-style: italic;
 font-size: 0.9rem;
-color: var(–text-dim);
+color: var(--text-dim);
 letter-spacing: 0.15em;
 margin-top: 0.3rem;
 }
@@ -127,7 +127,7 @@ inset 0 -4px 20px rgba(0,0,0,0.6);
 
 /* Metal rim */
 .pan-body::before {
-content: ‘’;
+content: '';
 position: absolute;
 inset: -3px;
 border-radius: 50%;
@@ -160,7 +160,7 @@ z-index: 5;
 }
 
 .ding::after {
-content: ‘’;
+content: '';
 position: absolute;
 inset: 20%;
 border-radius: 50%;
@@ -174,9 +174,9 @@ inset: 0;
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: ‘Cinzel’, serif;
+font-family: 'Cinzel', serif;
 font-size: clamp(0.55rem, 1.5vw, 0.7rem);
-color: var(–gold-dim);
+color: var(--gold-dim);
 letter-spacing: 0.05em;
 pointer-events: none;
 z-index: 1;
@@ -184,8 +184,8 @@ transition: color 0.15s;
 }
 
 .ding:hover .ding-label, .ding.active .ding-label {
-color: var(–gold-light);
-text-shadow: 0 0 10px var(–gold);
+color: var(--gold-light);
+text-shadow: 0 0 10px var(--gold);
 }
 
 /* Tone fields — the oval playing areas around the center */
@@ -216,9 +216,9 @@ inset: 0;
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: ‘Cinzel’, serif;
+font-family: 'Cinzel', serif;
 font-size: clamp(0.55rem, 1.5vw, 0.75rem);
-color: var(–gold-dim);
+color: var(--gold-dim);
 letter-spacing: 0.05em;
 transition: color 0.15s;
 pointer-events: none;
@@ -229,23 +229,23 @@ pointer-events: none;
 background: radial-gradient(ellipse at 38% 32%, #c9a84c 0%, #8a6030 45%, #4a3415 100%);
 box-shadow:
 0 0 0 1.5px #c9a84c,
-0 0 20px var(–glow-hit),
-0 0 40px var(–glow),
+0 0 20px var(--glow-hit),
+0 0 40px var(--glow),
 inset 0 1px 4px rgba(255,220,100,0.3);
 }
 
 .tone-field:hover .field-label,
 .tone-field.active .field-label {
-color: var(–gold-light);
-text-shadow: 0 0 10px var(–gold);
+color: var(--gold-light);
+text-shadow: 0 0 10px var(--gold);
 }
 
 .ding:hover, .ding.active {
 background: radial-gradient(circle at 38% 35%, #f0d080 0%, #c9a84c 40%, #8a6030 100%);
 box-shadow:
 0 0 0 2px #c9a84c,
-0 0 25px var(–glow-hit),
-0 0 50px var(–glow),
+0 0 25px var(--glow-hit),
+0 0 50px var(--glow),
 inset 0 1px 4px rgba(255,230,120,0.4);
 }
 
@@ -253,7 +253,7 @@ inset 0 1px 4px rgba(255,230,120,0.4);
 .ripple {
 position: absolute;
 border-radius: 50%;
-border: 1.5px solid var(–gold);
+border: 1.5px solid var(--gold);
 pointer-events: none;
 animation: ripple-out 0.8s ease-out forwards;
 top: 50%;
@@ -271,7 +271,7 @@ z-index: 20;
 .reverb-ring {
 position: absolute;
 border-radius: 50%;
-border: 1px solid var(–gold);
+border: 1px solid var(--gold);
 pointer-events: none;
 animation: reverb-fade 2s ease-out forwards;
 top: 50%;
@@ -300,27 +300,27 @@ gap: 0.6rem;
 }
 
 .hz-note {
-font-family: ‘Cinzel’, serif;
+font-family: 'Cinzel', serif;
 font-size: 1rem;
-color: var(–gold);
+color: var(--gold);
 letter-spacing: 0.15em;
-text-shadow: 0 0 16px var(–glow);
+text-shadow: 0 0 16px var(--glow);
 transition: opacity 0.1s;
 min-width: 2.5rem;
 text-align: right;
 }
 
 .hz-divider {
-color: var(–gold-dim);
+color: var(--gold-dim);
 font-size: 0.8rem;
 opacity: 0.5;
 }
 
 .hz-value {
-font-family: ‘Crimson Pro’, serif;
+font-family: 'Crimson Pro', serif;
 font-style: italic;
 font-size: 1rem;
-color: var(–text-dim);
+color: var(--text-dim);
 letter-spacing: 0.05em;
 min-width: 5rem;
 text-align: left;
@@ -349,10 +349,10 @@ gap: 0.5rem;
 }
 
 .controls-label {
-font-family: ‘Cinzel’, serif;
+font-family: 'Cinzel', serif;
 font-size: 0.6rem;
 letter-spacing: 0.2em;
-color: var(–text-dim);
+color: var(--text-dim);
 text-transform: uppercase;
 }
 
@@ -374,10 +374,10 @@ gap: 0.5rem;
 }
 
 .control-group label {
-font-family: ‘Cinzel’, serif;
+font-family: 'Cinzel', serif;
 font-size: 0.6rem;
 letter-spacing: 0.2em;
-color: var(–text-dim);
+color: var(--text-dim);
 text-transform: uppercase;
 }
 
@@ -385,7 +385,7 @@ input[type=range] {
 -webkit-appearance: none;
 width: 90px;
 height: 2px;
-background: linear-gradient(to right, var(–gold) var(–pct, 50%), #2a2a18 var(–pct, 50%));
+background: linear-gradient(to right, var(--gold) var(--pct, 50%), #2a2a18 var(--pct, 50%));
 border-radius: 2px;
 outline: none;
 cursor: pointer;
@@ -396,8 +396,8 @@ input[type=range]::-webkit-slider-thumb {
 width: 12px;
 height: 12px;
 border-radius: 50%;
-background: var(–gold);
-box-shadow: 0 0 8px var(–glow);
+background: var(--gold);
+box-shadow: 0 0 8px var(--glow);
 cursor: pointer;
 }
 
@@ -411,9 +411,9 @@ max-width: 420px;
 
 .scale-btn {
 background: none;
-border: 1px solid var(–gold-dim);
-color: var(–text-dim);
-font-family: ‘Cinzel’, serif;
+border: 1px solid var(--gold-dim);
+color: var(--text-dim);
+font-family: 'Cinzel', serif;
 font-size: 0.55rem;
 letter-spacing: 0.1em;
 padding: 0.3rem 0.6rem;
@@ -423,8 +423,8 @@ transition: all 0.15s;
 }
 
 .scale-btn:hover, .scale-btn.active {
-border-color: var(–gold);
-color: var(–gold);
+border-color: var(--gold);
+color: var(--gold);
 background: rgba(201,168,76,0.1);
 box-shadow: 0 0 10px rgba(201,168,76,0.2);
 }
@@ -435,7 +435,7 @@ z-index: 10;
 margin-top: 1.5rem;
 font-style: italic;
 font-size: 0.78rem;
-color: var(–text-dim);
+color: var(--text-dim);
 letter-spacing: 0.1em;
 opacity: 0.6;
 }
@@ -492,21 +492,39 @@ opacity: 0.6;
   <span class="hz-value" id="hzValue">— Hz</span>
 </div>
 
-<p class="hint">tap or click — keyboard 1–9 also works</p>
+<p class="hint">tap or click — keyboard 1--9 also works</p>
 
 <script>
 // ─── Audio Engine ────────────────────────────────────────────────────────────
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
+let ctx = null;
+let convolver, reverbGain, dryGain, masterGain;
+let audioReady = false;
 
-// Convolver for reverb
-let convolver = ctx.createConvolver();
-let reverbGain = ctx.createGain();
-let dryGain = ctx.createGain();
-let masterGain = ctx.createGain();
+function initAudio() {
+  if (audioReady) return;
+  try {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    convolver = ctx.createConvolver();
+    reverbGain = ctx.createGain();
+    dryGain = ctx.createGain();
+    masterGain = ctx.createGain();
 
-reverbGain.gain.value = 0.65;
-dryGain.gain.value = 0.5;
-masterGain.gain.value = 0.85;
+    reverbGain.gain.value = 0.65;
+    dryGain.gain.value = 0.5;
+    masterGain.gain.value = 0.85;
+
+    buildReverb(4.0);
+
+    convolver.connect(reverbGain);
+    reverbGain.connect(masterGain);
+    dryGain.connect(masterGain);
+    masterGain.connect(ctx.destination);
+
+    audioReady = true;
+  } catch(e) {
+    console.warn('Audio init failed:', e);
+  }
+}
 
 // Generate impulse response
 function buildReverb(seconds = 3.5) {
@@ -521,17 +539,12 @@ function buildReverb(seconds = 3.5) {
   }
   convolver.buffer = impulse;
 }
-buildReverb(4.0);
-
-convolver.connect(reverbGain);
-reverbGain.connect(masterGain);
-dryGain.connect(masterGain);
-masterGain.connect(ctx.destination);
-
 document.getElementById('reverbCtrl').addEventListener('input', e => {
-  const v = e.target.value / 100;
-  reverbGain.gain.setTargetAtTime(v * 0.9, ctx.currentTime, 0.05);
-  dryGain.gain.setTargetAtTime(0.3 + (1 - v) * 0.4, ctx.currentTime, 0.05);
+  if (audioReady) {
+    const v = e.target.value / 100;
+    reverbGain.gain.setTargetAtTime(v * 0.9, ctx.currentTime, 0.05);
+    dryGain.gain.setTargetAtTime(0.3 + (1 - v) * 0.4, ctx.currentTime, 0.05);
+  }
   updateSlider(e.target);
 });
 document.getElementById('sustainCtrl').addEventListener('input', e => updateSlider(e.target));
@@ -544,6 +557,8 @@ document.querySelectorAll('input[type=range]').forEach(updateSlider);
 
 // Handpan sound synthesis
 function playNote(freq, isCenter = false) {
+  initAudio();
+  if (!audioReady) return;
   if (ctx.state === 'suspended') ctx.resume();
 
   const sustainVal = document.getElementById('sustainCtrl').value / 100;
