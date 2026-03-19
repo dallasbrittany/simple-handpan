@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handpan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+–gold: #c9a84c;
+–gold-light: #e8cc7a;
+–gold-dim: #7a6230;
+–copper: #b5651d;
+–dark: #0a0a0f;
+–mid: #14141e;
+–surface: #1c1c2a;
+–text: #e8dcc8;
+–text-dim: #8a7a60;
+–glow: rgba(201,168,76,0.35);
+–glow-hit: rgba(201,168,76,0.7);
+}
+
+body {
+background: var(–dark);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+font-family: ‘Crimson Pro’, serif;
+color: var(–text);
+overflow: hidden;
+user-select: none;
+}
+
+/* Starfield bg */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background:
+radial-gradient(ellipse 120% 80% at 50% 100%, rgba(201,168,76,0.06) 0%, transparent 60%),
+radial-gradient(ellipse 60% 40% at 50% 50%, rgba(20,20,40,0.8) 0%, transparent 100%);
+pointer-events: none;
+z-index: 0;
+}
+
+.stars {
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 0;
+}
+
+.star {
+position: absolute;
+border-radius: 50%;
+background: white;
+animation: twinkle var(–d, 3s) ease-in-out infinite;
+animation-delay: var(–delay, 0s);
+}
+
+@keyframes twinkle {
+0%, 100% { opacity: var(–min-o, 0.1); transform: scale(1); }
+50% { opacity: var(–max-o, 0.6); transform: scale(1.2); }
+}
+
+header {
+position: relative;
+z-index: 10;
+text-align: center;
+margin-bottom: 2rem;
+}
+
+header h1 {
+font-family: ‘Cinzel’, serif;
+font-weight: 400;
+font-size: clamp(1.4rem, 3vw, 2rem);
+letter-spacing: 0.4em;
+color: var(–gold);
+text-shadow: 0 0 30px var(–glow);
+}
+
+header p {
+font-style: italic;
+font-size: 0.9rem;
+color: var(–text-dim);
+letter-spacing: 0.15em;
+margin-top: 0.3rem;
+}
+
+.instrument-wrap {
+position: relative;
+z-index: 10;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+/* The handpan shell */
+.handpan {
+position: relative;
+width: min(520px, 90vw);
+height: min(520px, 90vw);
+}
+
+.pan-body {
+width: 100%;
+height: 100%;
+border-radius: 50%;
+position: relative;
+background:
+radial-gradient(ellipse 70% 50% at 40% 35%, #3a3520 0%, transparent 55%),
+radial-gradient(ellipse 50% 60% at 70% 70%, #2a1f10 0%, transparent 50%),
+radial-gradient(circle at 50% 50%, #2c2c1e 0%, #1a1a10 40%, #111108 100%);
+box-shadow:
+0 0 0 2px #3a3520,
+0 0 0 3px #1a1a10,
+0 0 60px rgba(0,0,0,0.8),
+0 0 120px rgba(0,0,0,0.5),
+inset 0 2px 4px rgba(255,230,150,0.08),
+inset 0 -4px 20px rgba(0,0,0,0.6);
+}
+
+/* Metal rim */
+.pan-body::before {
+content: ‘’;
+position: absolute;
+inset: -3px;
+border-radius: 50%;
+background: conic-gradient(
+from 0deg,
+#5a4820, #c9a84c, #8a6a2c, #e8cc7a, #6a5224,
+#c9a84c, #4a3a18, #b89040, #7a6230, #c9a84c, #5a4820
+);
+z-index: -1;
+filter: blur(1px);
+}
+
+/* Center ding */
+.ding {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 18%;
+height: 18%;
+border-radius: 50%;
+background: radial-gradient(circle at 38% 35%, #d4b060 0%, #9a7030 40%, #6a4a18 100%);
+box-shadow:
+0 0 0 2px #5a4020,
+0 2px 8px rgba(0,0,0,0.6),
+inset 0 1px 3px rgba(255,220,100,0.3);
+cursor: pointer;
+transition: all 0.08s ease;
+z-index: 5;
+}
+
+.ding::after {
+content: ‘’;
+position: absolute;
+inset: 20%;
+border-radius: 50%;
+background: radial-gradient(circle at 35% 30%, rgba(255,230,150,0.4) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.ding-label {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.55rem, 1.5vw, 0.7rem);
+color: var(–gold-dim);
+letter-spacing: 0.05em;
+pointer-events: none;
+z-index: 1;
+transition: color 0.15s;
+}
+
+.ding:hover .ding-label, .ding.active .ding-label {
+color: var(–gold-light);
+text-shadow: 0 0 10px var(–gold);
+}
+
+/* Tone fields — the oval playing areas around the center */
+.tone-field {
+position: absolute;
+border-radius: 50%;
+cursor: pointer;
+transform-origin: center center;
+transition: all 0.08s ease;
+overflow: visible;
+}
+
+.tone-field .field-body {
+width: 100%;
+height: 100%;
+border-radius: 50%;
+background: radial-gradient(ellipse at 38% 32%, #8a7040 0%, #5a4520 45%, #3a2c10 100%);
+box-shadow:
+0 0 0 1.5px #7a6030,
+0 2px 6px rgba(0,0,0,0.5),
+inset 0 1px 3px rgba(255,210,80,0.15);
+transition: all 0.08s ease;
+}
+
+.tone-field .field-label {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.55rem, 1.5vw, 0.75rem);
+color: var(–gold-dim);
+letter-spacing: 0.05em;
+transition: color 0.15s;
+pointer-events: none;
+}
+
+.tone-field:hover .field-body,
+.tone-field.active .field-body {
+background: radial-gradient(ellipse at 38% 32%, #c9a84c 0%, #8a6030 45%, #4a3415 100%);
+box-shadow:
+0 0 0 1.5px #c9a84c,
+0 0 20px var(–glow-hit),
+0 0 40px var(–glow),
+inset 0 1px 4px rgba(255,220,100,0.3);
+}
+
+.tone-field:hover .field-label,
+.tone-field.active .field-label {
+color: var(–gold-light);
+text-shadow: 0 0 10px var(–gold);
+}
+
+.ding:hover, .ding.active {
+background: radial-gradient(circle at 38% 35%, #f0d080 0%, #c9a84c 40%, #8a6030 100%);
+box-shadow:
+0 0 0 2px #c9a84c,
+0 0 25px var(–glow-hit),
+0 0 50px var(–glow),
+inset 0 1px 4px rgba(255,230,120,0.4);
+}
+
+/* Ripple effect on hit */
+.ripple {
+position: absolute;
+border-radius: 50%;
+border: 1.5px solid var(–gold);
+pointer-events: none;
+animation: ripple-out 0.8s ease-out forwards;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+z-index: 20;
+}
+
+@keyframes ripple-out {
+0% { width: 100%; height: 100%; opacity: 0.8; }
+100% { width: 280%; height: 280%; opacity: 0; }
+}
+
+/* Reverb tail visualizer */
+.reverb-ring {
+position: absolute;
+border-radius: 50%;
+border: 1px solid var(–gold);
+pointer-events: none;
+animation: reverb-fade 2s ease-out forwards;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+z-index: 19;
+opacity: 0;
+}
+
+@keyframes reverb-fade {
+0% { width: 110%; height: 110%; opacity: 0.5; }
+100% { width: 400%; height: 400%; opacity: 0; }
+}
+
+/* Hz display */
+.hz-display {
+position: relative;
+z-index: 10;
+margin-top: 1.2rem;
+text-align: center;
+height: 2.2rem;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.6rem;
+}
+
+.hz-note {
+font-family: ‘Cinzel’, serif;
+font-size: 1rem;
+color: var(–gold);
+letter-spacing: 0.15em;
+text-shadow: 0 0 16px var(–glow);
+transition: opacity 0.1s;
+min-width: 2.5rem;
+text-align: right;
+}
+
+.hz-divider {
+color: var(–gold-dim);
+font-size: 0.8rem;
+opacity: 0.5;
+}
+
+.hz-value {
+font-family: ‘Crimson Pro’, serif;
+font-style: italic;
+font-size: 1rem;
+color: var(–text-dim);
+letter-spacing: 0.05em;
+min-width: 5rem;
+text-align: left;
+transition: opacity 0.1s;
+}
+
+.hz-display.fresh .hz-note,
+.hz-display.fresh .hz-value {
+opacity: 1;
+}
+
+.hz-display.fading .hz-note,
+.hz-display.fading .hz-value {
+opacity: 0.25;
+}
+
+/* Controls */
+.controls-scale {
+position: relative;
+z-index: 10;
+margin-top: 1.5rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+}
+
+.controls-label {
+font-family: ‘Cinzel’, serif;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: var(–text-dim);
+text-transform: uppercase;
+}
+
+.controls {
+position: relative;
+z-index: 10;
+margin-top: 1rem;
+display: flex;
+gap: 2.5rem;
+align-items: center;
+justify-content: center;
+}
+
+.control-group {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+}
+
+.control-group label {
+font-family: ‘Cinzel’, serif;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: var(–text-dim);
+text-transform: uppercase;
+}
+
+input[type=range] {
+-webkit-appearance: none;
+width: 90px;
+height: 2px;
+background: linear-gradient(to right, var(–gold) var(–pct, 50%), #2a2a18 var(–pct, 50%));
+border-radius: 2px;
+outline: none;
+cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 12px;
+height: 12px;
+border-radius: 50%;
+background: var(–gold);
+box-shadow: 0 0 8px var(–glow);
+cursor: pointer;
+}
+
+.scale-selector {
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
+justify-content: center;
+max-width: 420px;
+}
+
+.scale-btn {
+background: none;
+border: 1px solid var(–gold-dim);
+color: var(–text-dim);
+font-family: ‘Cinzel’, serif;
+font-size: 0.55rem;
+letter-spacing: 0.1em;
+padding: 0.3rem 0.6rem;
+border-radius: 2px;
+cursor: pointer;
+transition: all 0.15s;
+}
+
+.scale-btn:hover, .scale-btn.active {
+border-color: var(–gold);
+color: var(–gold);
+background: rgba(201,168,76,0.1);
+box-shadow: 0 0 10px rgba(201,168,76,0.2);
+}
+
+.hint {
+position: relative;
+z-index: 10;
+margin-top: 1.5rem;
+font-style: italic;
+font-size: 0.78rem;
+color: var(–text-dim);
+letter-spacing: 0.1em;
+opacity: 0.6;
+}
+</style>
+
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<header>
+  <h1>HANDPAN</h1>
+  <p>touch the fields to play</p>
+</header>
+
+<div class="instrument-wrap">
+  <div class="handpan">
+    <div class="pan-body" id="panBody">
+      <div class="ding" id="ding" data-note="0"><span class="ding-label" id="dingLabel"></span></div>
+      <!-- Tone fields placed by JS -->
+    </div>
+  </div>
+</div>
+
+<div class="controls-scale">
+  <label class="controls-label">Scale</label>
+  <div class="scale-selector">
+    <button class="scale-btn active" data-scale="dAmara">D Amara</button>
+    <button class="scale-btn" data-scale="dKurd">D Kurd</button>
+    <button class="scale-btn" data-scale="fPygmy">F Pygmy</button>
+    <button class="scale-btn" data-scale="eHijaz">E Hijaz</button>
+    <button class="scale-btn" data-scale="eLaSirena">E La Sirena</button>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="control-group">
+    <label>Reverb</label>
+    <input type="range" id="reverbCtrl" min="0" max="100" value="65">
+  </div>
+  <div class="control-group">
+    <label>Sustain</label>
+    <input type="range" id="sustainCtrl" min="20" max="100" value="60">
+  </div>
+  <div class="control-group">
+    <label>Layout</label>
+    <button class="scale-btn" id="mirrorBtn">⇄ Mirror</button>
+  </div>
+</div>
+
+<div class="hz-display fading" id="hzDisplay">
+  <span class="hz-note" id="hzNote">—</span>
+  <span class="hz-divider">·</span>
+  <span class="hz-value" id="hzValue">— Hz</span>
+</div>
+
+<p class="hint">tap or click — keyboard 1–9 also works</p>
+
+<script>
+// ─── Audio Engine ────────────────────────────────────────────────────────────
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+// Convolver for reverb
+let convolver = ctx.createConvolver();
+let reverbGain = ctx.createGain();
+let dryGain = ctx.createGain();
+let masterGain = ctx.createGain();
+
+reverbGain.gain.value = 0.65;
+dryGain.gain.value = 0.5;
+masterGain.gain.value = 0.85;
+
+// Generate impulse response
+function buildReverb(seconds = 3.5) {
+  const rate = ctx.sampleRate;
+  const length = rate * seconds;
+  const impulse = ctx.createBuffer(2, length, rate);
+  for (let c = 0; c < 2; c++) {
+    const d = impulse.getChannelData(c);
+    for (let i = 0; i < length; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+    }
+  }
+  convolver.buffer = impulse;
+}
+buildReverb(4.0);
+
+convolver.connect(reverbGain);
+reverbGain.connect(masterGain);
+dryGain.connect(masterGain);
+masterGain.connect(ctx.destination);
+
+document.getElementById('reverbCtrl').addEventListener('input', e => {
+  const v = e.target.value / 100;
+  reverbGain.gain.setTargetAtTime(v * 0.9, ctx.currentTime, 0.05);
+  dryGain.gain.setTargetAtTime(0.3 + (1 - v) * 0.4, ctx.currentTime, 0.05);
+  updateSlider(e.target);
+});
+document.getElementById('sustainCtrl').addEventListener('input', e => updateSlider(e.target));
+
+function updateSlider(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+}
+document.querySelectorAll('input[type=range]').forEach(updateSlider);
+
+// Handpan sound synthesis
+function playNote(freq, isCenter = false) {
+  if (ctx.state === 'suspended') ctx.resume();
+
+  const sustainVal = document.getElementById('sustainCtrl').value / 100;
+  const decay = 0.5 + sustainVal * 3.5;
+
+  const now = ctx.currentTime;
+
+  // Fundamental + harmonics tuned for handpan character
+  const partials = [
+    { ratio: 1,    gainFactor: 1.0,  decayMult: 1.0 },
+    { ratio: 2,    gainFactor: 0.45, decayMult: 0.7 },
+    { ratio: 3,    gainFactor: 0.12, decayMult: 0.5 },
+    { ratio: 4.02, gainFactor: 0.06, decayMult: 0.35 },
+    // Slight inharmonic for "metal" texture
+    { ratio: 0.998, gainFactor: 0.15, decayMult: 0.6 },
+  ];
+
+  const noteGain = ctx.createGain();
+  noteGain.gain.setValueAtTime(0.001, now);
+  noteGain.gain.linearRampToValueAtTime(isCenter ? 0.55 : 0.45, now + 0.003);
+  noteGain.gain.exponentialRampToValueAtTime(0.001, now + decay);
+
+  partials.forEach(p => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq * p.ratio, now);
+    // Very slight pitch drop (real handpan behavior)
+    osc.frequency.exponentialRampToValueAtTime(freq * p.ratio * 0.998, now + 0.12);
+
+    g.gain.setValueAtTime(p.gainFactor, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + decay * p.decayMult);
+
+    osc.connect(g);
+    g.connect(noteGain);
+    osc.start(now);
+    osc.stop(now + decay + 0.1);
+  });
+
+  // Strike transient (metallic click)
+  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+  const nd = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / nd.length, 6);
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.12, now);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+  const bpf = ctx.createBiquadFilter();
+  bpf.type = 'bandpass';
+  bpf.frequency.value = freq * 2;
+  bpf.Q.value = 3;
+  noise.connect(bpf);
+  bpf.connect(noiseGain);
+  noiseGain.connect(noteGain);
+  noise.start(now);
+
+  noteGain.connect(dryGain);
+  noteGain.connect(convolver);
+}
+
+// ─── Hz Display ──────────────────────────────────────────────────────────────
+const hzDisplay = document.getElementById('hzDisplay');
+const hzNote = document.getElementById('hzNote');
+const hzValue = document.getElementById('hzValue');
+let hzFadeTimer = null;
+
+// Map freq → note name using standard MIDI convention (A4=440=MIDI69)
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function freqToNoteName(freq) {
+  const midi = Math.round(12 * Math.log2(freq / 440) + 69);
+  const octave = Math.floor(midi / 12) - 1;
+  const name = NOTE_NAMES[midi % 12];
+  return `${name}${octave}`;
+}
+
+function showHz(freq) {
+  hzNote.textContent = freqToNoteName(freq);
+  hzValue.textContent = freq.toFixed(2) + ' Hz';
+  hzDisplay.classList.remove('fading');
+  hzDisplay.classList.add('fresh');
+  clearTimeout(hzFadeTimer);
+  hzFadeTimer = setTimeout(() => {
+    hzDisplay.classList.remove('fresh');
+    hzDisplay.classList.add('fading');
+  }, 2200);
+}
+
+
+const A4 = 440;
+const semitone = (n) => A4 * Math.pow(2, n / 12);
+
+const scales = {
+  dAmara: {
+    // D3 ding — D/ A C D E F G A C
+    center: semitone(-19),  // D3  = 146.83 Hz
+    notes: [
+      { label: 'A',  freq: semitone(-12)  },  // A3  = 220.00 Hz
+      { label: 'C',  freq: semitone(-9)   },  // C4  = 261.63 Hz
+      { label: 'D',  freq: semitone(-7)   },  // D4  = 293.66 Hz
+      { label: 'E',  freq: semitone(-5)   },  // E4  = 329.63 Hz
+      { label: 'F',  freq: semitone(-4)   },  // F4  = 349.23 Hz
+      { label: 'G',  freq: semitone(-2)   },  // G4  = 392.00 Hz
+      { label: 'A',  freq: semitone(0)    },  // A4  = 440.00 Hz
+      { label: 'C',  freq: semitone(3)    },  // C5  = 523.25 Hz
+    ]
+  },
+  dKurd: {
+    // D3 ding — D/ A Bb C D E F G A
+    center: semitone(-19),  // D3  = 146.83 Hz
+    notes: [
+      { label: 'A',  freq: semitone(-12)  },  // A3  = 220.00 Hz
+      { label: 'B♭', freq: semitone(-11)  },  // Bb3 = 233.08 Hz
+      { label: 'C',  freq: semitone(-9)   },  // C4  = 261.63 Hz
+      { label: 'D',  freq: semitone(-7)   },  // D4  = 293.66 Hz
+      { label: 'E',  freq: semitone(-5)   },  // E4  = 329.63 Hz
+      { label: 'F',  freq: semitone(-4)   },  // F4  = 349.23 Hz
+      { label: 'G',  freq: semitone(-2)   },  // G4  = 392.00 Hz
+      { label: 'A',  freq: semitone(0)    },  // A4  = 440.00 Hz
+    ]
+  },
+  fPygmy: {
+    // F3 ding — F/ G Ab C Eb F G Ab C
+    center: semitone(-16),  // F3  = 174.61 Hz
+    notes: [
+      { label: 'G',  freq: semitone(-14)  },  // G3  = 196.00 Hz
+      { label: 'A♭', freq: semitone(-13)  },  // Ab3 = 207.65 Hz
+      { label: 'C',  freq: semitone(-9)   },  // C4  = 261.63 Hz
+      { label: 'E♭', freq: semitone(-6)   },  // Eb4 = 311.13 Hz
+      { label: 'F',  freq: semitone(-4)   },  // F4  = 349.23 Hz
+      { label: 'G',  freq: semitone(-2)   },  // G4  = 392.00 Hz
+      { label: 'A♭', freq: semitone(-1)   },  // Ab4 = 415.30 Hz
+      { label: 'C',  freq: semitone(3)    },  // C5  = 523.25 Hz
+    ]
+  },
+  eHijaz: {
+    // E3 ding — E/ A B C D# E F# G B
+    center: semitone(-17),  // E3  = 164.81 Hz
+    notes: [
+      { label: 'A',  freq: semitone(-12)  },  // A3  = 220.00 Hz
+      { label: 'B',  freq: semitone(-10)  },  // B3  = 246.94 Hz
+      { label: 'C',  freq: semitone(-9)   },  // C4  = 261.63 Hz
+      { label: 'D#', freq: semitone(-6)   },  // D#4 = 311.13 Hz
+      { label: 'E',  freq: semitone(-5)   },  // E4  = 329.63 Hz
+      { label: 'F#', freq: semitone(-3)   },  // F#4 = 369.99 Hz
+      { label: 'G',  freq: semitone(-2)   },  // G4  = 392.00 Hz
+      { label: 'B',  freq: semitone(2)    },  // B4  = 493.88 Hz
+    ]
+  },
+  eLaSirena: {
+    // E3 ding — E/ G B C# D E F# G B
+    center: semitone(-17),  // E3  = 164.81 Hz
+    notes: [
+      { label: 'G',  freq: semitone(-14)  },  // G3  = 196.00 Hz
+      { label: 'B',  freq: semitone(-10)  },  // B3  = 246.94 Hz
+      { label: 'C#', freq: semitone(-8)   },  // C#4 = 277.18 Hz
+      { label: 'D',  freq: semitone(-7)   },  // D4  = 293.66 Hz
+      { label: 'E',  freq: semitone(-5)   },  // E4  = 329.63 Hz
+      { label: 'F#', freq: semitone(-3)   },  // F#4 = 369.99 Hz
+      { label: 'G',  freq: semitone(-2)   },  // G4  = 392.00 Hz
+      { label: 'B',  freq: semitone(2)    },  // B4  = 493.88 Hz
+    ]
+  },
+  csMystic: {
+    // C#3 ding — C#/ G# A C# D# E G# B
+    center: semitone(-20),  // C#3 = 138.59 Hz
+    notes: [
+      { label: 'G#', freq: semitone(-13)  },  // G#3 = 207.65 Hz
+      { label: 'A',  freq: semitone(-12)  },  // A3  = 220.00 Hz
+      { label: 'C#', freq: semitone(-8)   },  // C#4 = 277.18 Hz
+      { label: 'D#', freq: semitone(-6)   },  // D#4 = 311.13 Hz
+      { label: 'E',  freq: semitone(-5)   },  // E4  = 329.63 Hz
+      { label: 'G#', freq: semitone(-1)   },  // G#4 = 415.30 Hz
+      { label: 'B',  freq: semitone(2)    },  // B4  = 493.88 Hz
+      { label: 'C#', freq: semitone(4)    },  // C#5 = 554.37 Hz
+    ]
+  }
+};
+
+let currentScale = 'dAmara';
+
+// ─── UI / Layout ─────────────────────────────────────────────────────────────
+const panBody = document.getElementById('panBody');
+
+let mirrored = false;
+
+function buildFields(scaleName) {
+  panBody.querySelectorAll('.tone-field').forEach(el => el.remove());
+
+  const scale = scales[scaleName];
+  document.getElementById('ding').dataset.freq = scale.center;
+  document.getElementById('dingLabel').textContent = freqToNoteName(scale.center).replace(/\d/, '');
+
+  const n = scale.notes.length;
+  const radius = 33;
+  const fw = 15;
+  const fh = 10;
+
+  // Evenly spaced positions, starting at ~8 o'clock (210°), going clockwise
+  const positions = Array.from({length: n}, (_, i) => {
+    const deg = 210 + i * (360 / n);
+    return (deg - 90) * Math.PI / 180;
+  });
+
+  // Zigzag: lowest note at pos 0, then alternates filling from each end
+  // mirrored flips which side gets the even/odd notes (left-handed vs right-handed pan)
+  function zigzagOrder(count, mirror) {
+    const order = new Array(count);
+    let left = 0;
+    let right = count - 1;
+    for (let noteIdx = 0; noteIdx < count; noteIdx++) {
+      const goLeft = mirror ? (noteIdx % 2 === 0) : (noteIdx % 2 !== 0);
+      if (goLeft) order[left++] = noteIdx;
+      else order[right--] = noteIdx;
+    }
+    return order;
+  }
+
+  const order = zigzagOrder(n, mirrored);
+
+  order.forEach((noteIdx, posIdx) => {
+    const note = scale.notes[noteIdx];
+    const angle = positions[posIdx];
+    const cx = 50 + radius * Math.cos(angle);
+    const cy = 50 + radius * Math.sin(angle);
+
+    const field = document.createElement('div');
+    field.className = 'tone-field';
+    field.style.cssText = `
+      left: ${cx - fw/2}%;
+      top: ${cy - fh/2}%;
+      width: ${fw}%;
+      height: ${fh * 1.6}%;
+      transform: rotate(${angle + Math.PI/2}rad);
+    `;
+    field.dataset.freq = note.freq;
+    field.dataset.noteIdx = noteIdx;
+
+    field.innerHTML = `
+      <div class="field-body"></div>
+      <div class="field-label">${note.label}</div>
+    `;
+
+    field.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      triggerNote(field, note.freq, false);
+    });
+
+    panBody.appendChild(field);
+  });
+}
+
+function triggerNote(el, freq, isCenter) {
+  const f = parseFloat(freq);
+  playNote(f, isCenter);
+  showHz(f);
+  flashElement(el);
+  spawnRipple(el);
+}
+
+function flashElement(el) {
+  el.classList.add('active');
+  setTimeout(() => el.classList.remove('active'), 180);
+}
+
+function spawnRipple(el) {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  el.appendChild(r);
+  const r2 = document.createElement('div');
+  r2.className = 'reverb-ring';
+  el.appendChild(r2);
+  setTimeout(() => { r.remove(); r2.remove(); }, 2100);
+}
+
+// Ding
+document.getElementById('ding').addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  const freq = parseFloat(e.currentTarget.dataset.freq);
+  triggerNote(e.currentTarget, freq, true);
+});
+
+
+document.getElementById('mirrorBtn').addEventListener('click', () => {
+  mirrored = !mirrored;
+  document.getElementById('mirrorBtn').classList.toggle('active', mirrored);
+  buildFields(currentScale);
+});
+
+
+document.querySelectorAll('.scale-btn[data-scale]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentScale = btn.dataset.scale;
+    buildFields(currentScale);
+  });
+});
+
+// Keyboard
+const keyMap = {
+  '1': 0, '2': 1, '3': 2, '4': 3, '5': 4,
+  '6': 5, '7': 6, '8': 7, '9': 8
+};
+
+document.addEventListener('keydown', (e) => {
+  if (e.repeat) return;
+  const scale = scales[currentScale];
+  if (e.key === '0') {
+    const dingEl = document.getElementById('ding');
+    triggerNote(dingEl, scale.center, true);
+    return;
+  }
+  const idx = keyMap[e.key];
+  if (idx === undefined) return;
+  const note = scale.notes[idx];
+  if (!note) return;
+  const field = panBody.querySelector(`.tone-field[data-note-idx="${idx}"]`);
+  if (field) triggerNote(field, note.freq, false);
+});
+
+// ─── Stars ───────────────────────────────────────────────────────────────────
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 0.5;
+  s.style.cssText = `
+    width: ${size}px; height: ${size}px;
+    left: ${Math.random()*100}%; top: ${Math.random()*100}%;
+    --d: ${2 + Math.random()*4}s;
+    --delay: ${Math.random()*5}s;
+    --min-o: ${0.05 + Math.random()*0.15};
+    --max-o: ${0.3 + Math.random()*0.5};
+  `;
+  starsEl.appendChild(s);
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+buildFields(currentScale);
+</script>
+
+</body>
+</html>
