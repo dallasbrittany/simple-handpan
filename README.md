@@ -15,4 +15,9 @@ Synthesized handpan coded with free Claude chat.
 
 ## Screenshots
 
-<img src="handpan.PNG" alt="Handpan Synth App" width="400"/>
+<table>
+  <tr>
+    <td><img src="handpan.PNG" alt="Handpan Synth App"/></td>
+    <td><img src="handpan_playing.PNG" alt="Playing Handpan Synth"/></td>
+  </tr>
+</table>
